@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
 import { LanguageProvider } from "@/components/language-provider"
+import { ServiceWorkerRegister } from "@/components/service-worker-register"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -14,9 +15,19 @@ export const metadata: Metadata = {
     title: "Lytli",
     statusBarStyle: "default",
   },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
-    icon: [{ url: "/logo.svg", type: "image/svg+xml" }, { url: "/icon-192.png" }],
-    apple: "/icon-192.png",
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 }
 
@@ -25,6 +36,7 @@ export const viewport: Viewport = {
   themeColor: "#2D9E6B",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 }
 
 export default function RootLayout({
@@ -40,6 +52,7 @@ export default function RootLayout({
             {children}
           </div>
         </LanguageProvider>
+        <ServiceWorkerRegister />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>

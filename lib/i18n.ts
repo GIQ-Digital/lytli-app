@@ -656,6 +656,19 @@ const dict = {
   perkSummaries: { en: "Weekly care summaries", pt: "Resumos semanais de cuidado", es: "Resúmenes semanales de cuidado" },
   checkoutTitle: { en: "Lytli Pro", pt: "Lytli Pro", es: "Lytli Pro" },
   paymentSuccess: { en: "Welcome to Pro! Your subscription is active.", pt: "Bem-vindo ao Pro! Sua assinatura está ativa.", es: "¡Bienvenido a Pro! Tu suscripción está activa." },
+
+  // PWA install prompt
+  installTitle: { en: "Install Lytli on your phone", pt: "Instale o Lytli no seu celular", es: "Instala Lytli en tu celular" },
+  installBody: {
+    en: "Open it from your home screen, full screen, in one tap.",
+    pt: "Abra direto da tela inicial, em tela cheia, com um toque.",
+    es: "Ábrelo desde tu pantalla de inicio, a pantalla completa, con un toque.",
+  },
+  installButton: { en: "Install", pt: "Instalar", es: "Instalar" },
+  installNotNow: { en: "Not now", pt: "Agora não", es: "Ahora no" },
+  installGotIt: { en: "Got it", pt: "Entendi", es: "Entendido" },
+  installIosStep1: { en: "Tap Share in the browser bar", pt: "Toque em Compartilhar na barra do navegador", es: "Toca Compartir en la barra del navegador" },
+  installIosStep2: { en: "Choose Add to Home Screen", pt: "Escolha Adicionar à Tela de Início", es: "Elige Agregar a inicio" },
 } satisfies Record<string, Entry>
 
 export type TKey = keyof typeof dict
