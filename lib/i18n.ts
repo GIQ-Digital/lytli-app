@@ -669,6 +669,33 @@ const dict = {
   installGotIt: { en: "Got it", pt: "Entendi", es: "Entendido" },
   installIosStep1: { en: "Tap Share in the browser bar", pt: "Toque em Compartilhar na barra do navegador", es: "Toca Compartir en la barra del navegador" },
   installIosStep2: { en: "Choose Add to Home Screen", pt: "Escolha Adicionar à Tela de Início", es: "Elige Agregar a inicio" },
+  // Account screen
+  openAccount: { en: "Open my account", pt: "Abrir minha conta", es: "Abrir mi cuenta" },
+  freePlanLabel: { en: "Free plan", pt: "Plano gratuito", es: "Plan gratuito" },
+  freePlanHint: {
+    en: "Get more AI sessions and family seats with Pro.",
+    pt: "Tenha mais sessões de IA e vagas para a família com o Pro.",
+    es: "Obtén más sesiones de IA y lugares para la familia con Pro.",
+  },
+  trialDaysLeft: { en: "{n} days left in your free trial", pt: "Faltam {n} dias de teste grátis", es: "Quedan {n} días de prueba gratis" },
+  trialOneDayLeft: { en: "1 day left in your free trial", pt: "Falta 1 dia de teste grátis", es: "Queda 1 día de prueba gratis" },
+  cancelFailed: {
+    en: "We couldn't cancel your subscription. Please try again.",
+    pt: "Não foi possível cancelar sua assinatura. Tente de novo.",
+    es: "No pudimos cancelar tu suscripción. Inténtalo de nuevo.",
+  },
+  changePassword: { en: "Change password", pt: "Alterar senha", es: "Cambiar contraseña" },
+  currentPassword: { en: "Current password", pt: "Senha atual", es: "Contraseña actual" },
+  newPassword: { en: "New password", pt: "Nova senha", es: "Nueva contraseña" },
+  confirmNewPassword: { en: "Confirm new password", pt: "Confirme a nova senha", es: "Confirma la nueva contraseña" },
+  passwordTooShort: { en: "Use at least 8 characters.", pt: "Use pelo menos 8 caracteres.", es: "Usa al menos 8 caracteres." },
+  passwordMismatch: { en: "Passwords don't match.", pt: "As senhas não coincidem.", es: "Las contraseñas no coinciden." },
+  passwordChangeFailed: {
+    en: "Couldn't change your password. Check your current password and try again.",
+    pt: "Não foi possível alterar a senha. Confira a senha atual e tente de novo.",
+    es: "No se pudo cambiar la contraseña. Revisa tu contraseña actual e inténtalo de nuevo.",
+  },
+  passwordChanged: { en: "Your password was changed.", pt: "Sua senha foi alterada.", es: "Tu contraseña fue cambiada." },
 } satisfies Record<string, Entry>
 
 export type TKey = keyof typeof dict

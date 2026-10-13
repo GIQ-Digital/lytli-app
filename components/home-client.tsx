@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import Link from "next/link"
-import { Plus, Check, Pill, Calendar } from "lucide-react"
+import { Plus, Check, Pill, Calendar, UserRound } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { LanguageToggle } from "@/components/language-toggle"
 import { SectionLabel, CardLabel } from "@/components/lytli-ui"
@@ -56,7 +56,16 @@ export function HomeClient({
             {t("caringFor")} {recipientName}
           </div>
         </div>
-        <LanguageToggle variant="pills" />
+        <div className="flex items-center gap-2">
+          <LanguageToggle variant="pills" />
+          <Link
+            href="/account"
+            aria-label={t("openAccount")}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-green-dark transition-colors hover:bg-secondary"
+          >
+            <UserRound className="h-[18px] w-[18px]" />
+          </Link>
+        </div>
       </div>
 
       {/* Daily tip */}
