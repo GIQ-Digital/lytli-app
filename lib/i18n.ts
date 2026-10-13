@@ -198,9 +198,14 @@ const dict = {
     es: "👨‍👩‍👧 Coordinación familiar",
   },
   challengeOrganized: {
-    en: "📋 Staying organized",
-    pt: "📋 Me organizar",
-    es: "📋 Mantenerme organizado",
+  en: "📋 Staying organized",
+  pt: "📋 Me organizar",
+  es: "📋 Mantenerme organizado",
+  },
+  challengeSelectedCount: {
+  en: "{n}/3 selected",
+  pt: "{n}/3 selecionados",
+  es: "{n}/3 seleccionados",
   },
   beforeBegin: {
     en: "Before we begin",

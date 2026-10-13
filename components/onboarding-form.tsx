@@ -11,6 +11,7 @@ import { completeOnboarding } from "@/app/actions/onboarding"
 
 const relationships: TKey[] = ["relMom", "relDad", "relSpouse", "relGrandparent", "relOther"]
 const challenges: TKey[] = ["challengeMeds", "challengeAppts", "challengeFamily", "challengeOrganized"]
+const MAX_CHALLENGES = 3
 
 export function OnboardingForm() {
   const { t } = useLanguage()
@@ -20,7 +21,7 @@ export function OnboardingForm() {
   const [name, setName] = useState("")
   const [age, setAge] = useState("")
   const [rel, setRel] = useState<TKey | null>(null)
-  const [challenge, setChallenge] = useState<TKey | null>(null)
+  const [selectedChallenges, setSelectedChallenges] = useState<TKey[]>([])
   const [checks, setChecks] = useState([false, false, false])
   const [loading, setLoading] = useState(false)
 
@@ -30,6 +31,14 @@ export function OnboardingForm() {
     setChecks((prev) => prev.map((c, idx) => (idx === i ? !c : c)))
   }
 
+  function toggleChallenge(c: TKey) {
+    setSelectedChallenges((prev) => {
+      if (prev.includes(c)) return prev.filter((x) => x !== c)
+      if (prev.length >= MAX_CHALLENGES) return prev
+      return [...prev, c]
+    })
+  }
+
   async function finish() {
     setLoading(true)
     try {
@@ -37,7 +46,7 @@ export function OnboardingForm() {
         name,
         age,
         relationship: rel ? t(rel) : undefined,
-        challenge: challenge ? t(challenge) : undefined,
+        challenges: selectedChallenges.map((c) => t(c)),
       })
       router.push("/home")
       router.refresh()
@@ -117,23 +126,41 @@ export function OnboardingForm() {
 
       {step === 2 && (
         <div>
-          <h1 className="mb-6 text-[22px] font-semibold text-foreground text-balance">{t("challengeTitle")}</h1>
+          <h1 className="text-[22px] font-semibold text-foreground text-balance">{t("challengeTitle")}</h1>
+          <p className="mb-6 mt-1.5 text-[13px] text-muted-foreground" aria-live="polite">
+            {t("challengeSelectedCount").replace("{n}", String(selectedChallenges.length))}
+          </p>
           <div className="flex flex-col gap-3">
-            {challenges.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setChallenge(c)}
-                className={cn(
-                  "w-full rounded-xl border px-4 py-4 text-left text-sm font-medium transition-colors cursor-pointer",
-                  challenge === c
-                    ? "border-primary bg-secondary text-secondary-foreground"
-                    : "border-border bg-card text-foreground",
-                )}
-              >
-                {t(c)}
-              </button>
-            ))}
+            {challenges.map((c) => {
+              const isSelected = selectedChallenges.includes(c)
+              const isLocked = !isSelected && selectedChallenges.length >= MAX_CHALLENGES
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  aria-pressed={isSelected}
+                  disabled={isLocked}
+                  onClick={() => toggleChallenge(c)}
+                  className={cn(
+                    "flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-4 text-left text-sm font-medium transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
+                    isSelected
+                      ? "border-primary bg-secondary text-secondary-foreground"
+                      : "border-border bg-card text-foreground",
+                  )}
+                >
+                  <span>{t(c)}</span>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border text-xs transition-colors",
+                      isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card",
+                    )}
+                  >
+                    {isSelected && "✓"}
+                  </span>
+                </button>
+              )
+            })}
           </div>
           <div className="mt-6 flex gap-3">
             <button
@@ -145,7 +172,7 @@ export function OnboardingForm() {
             </button>
             <button
               type="button"
-              disabled={!challenge}
+              disabled={selectedChallenges.length === 0}
               onClick={() => setStep(3)}
               className="flex-1 rounded-full bg-primary py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-[#1f7a52] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
