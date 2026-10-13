@@ -156,6 +156,17 @@ export const aiSessions = pgTable("ai_sessions", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
 
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  endpoint: text("endpoint").notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
 export const subscriptions = pgTable("subscriptions", {
   id: serial("id").primaryKey(),
   userId: text("userId").notNull().unique(),

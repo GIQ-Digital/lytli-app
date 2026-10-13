@@ -25,6 +25,39 @@ function isStaticAsset(url) {
   )
 }
 
+const APP_URL = "https://app.lytli.com"
+
+self.addEventListener("push", (event) => {
+  let payload = {}
+  try {
+    payload = event.data ? event.data.json() : {}
+  } catch {
+    payload = { body: event.data ? event.data.text() : "" }
+  }
+
+  const title = payload.title || "Lytli"
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: payload.body || "",
+      icon: "/icon-192.png",
+      badge: "/icon-192.png",
+      data: { url: payload.url || APP_URL },
+    }),
+  )
+})
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close()
+  const target = (event.notification.data && event.notification.data.url) || APP_URL
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const existing = windows.find((w) => w.url.startsWith(target))
+      if (existing) return existing.focus()
+      return self.clients.openWindow(target)
+    }),
+  )
+})
+
 self.addEventListener("fetch", (event) => {
   const { request } = event
   if (request.method !== "GET") return

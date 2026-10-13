@@ -10,6 +10,7 @@ import { SectionLabel } from "@/components/lytli-ui"
 import { SheetModal, Field, inputClass } from "@/components/sheet-modal"
 import { LogoutButton } from "@/components/logout-button"
 import { ProCheckout } from "@/components/pro-checkout"
+import { NotificationsToggle } from "@/components/notifications-toggle"
 import { authClient } from "@/lib/auth-client"
 import { cancelSubscriptionAtPeriodEnd } from "@/app/actions/account"
 
@@ -129,6 +130,8 @@ export function AccountClient({
           </div>
         )}
       </section>
+
+      <NotificationsToggle />
 
       <section className="mb-3.5 rounded-2xl border border-border bg-card px-4">
         <button

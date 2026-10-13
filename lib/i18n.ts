@@ -707,6 +707,24 @@ const dict = {
     es: "No se pudo cambiar la contraseña. Revisa tu contraseña actual e inténtalo de nuevo.",
   },
   passwordChanged: { en: "Your password was changed.", pt: "Sua senha foi alterada.", es: "Tu contraseña fue cambiada." },
+  notifications: { en: "Notifications", pt: "Notificações", es: "Notificaciones" },
+  notificationsEnabled: { en: "Enabled on this device", pt: "Ativadas neste aparelho", es: "Activadas en este dispositivo" },
+  notificationsDisabled: { en: "Disabled", pt: "Desativadas", es: "Desactivadas" },
+  notificationsUnsupported: {
+    en: "Not supported on this browser",
+    pt: "Não suportadas neste navegador",
+    es: "No compatibles con este navegador",
+  },
+  notificationsBlocked: {
+    en: "Blocked — allow them in your browser settings",
+    pt: "Bloqueadas — permita nas configurações do navegador",
+    es: "Bloqueadas — permítelas en la configuración del navegador",
+  },
+  notificationsFailed: {
+    en: "Couldn't update notifications. Please try again.",
+    pt: "Não foi possível atualizar as notificações. Tente de novo.",
+    es: "No se pudieron actualizar las notificaciones. Inténtalo de nuevo.",
+  },
 } satisfies Record<string, Entry>
 
 export type TKey = keyof typeof dict
