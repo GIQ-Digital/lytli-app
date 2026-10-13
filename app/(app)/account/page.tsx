@@ -2,11 +2,16 @@ import { AccountClient } from "@/components/account-client"
 import { getSession } from "@/lib/auth-helpers"
 import { getSubscription } from "@/app/actions/subscription"
 import { isPro } from "@/lib/subscription"
+import { getFamilyUpdatesEnabled } from "@/app/actions/notification-prefs"
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
 export default async function AccountPage() {
-  const [session, sub] = await Promise.all([getSession(), getSubscription()])
+  const [session, sub, familyUpdates] = await Promise.all([
+    getSession(),
+    getSubscription(),
+    getFamilyUpdatesEnabled(),
+  ])
 
   const pro = isPro(sub)
   const trialing = pro && sub.status === "trialing"
@@ -23,6 +28,7 @@ export default async function AccountPage() {
       trialDaysLeft={trialDaysLeft}
       cancelAtPeriodEnd={sub.cancelAtPeriodEnd}
       canCancel={pro && Boolean(sub.stripeSubscriptionId)}
+      familyUpdates={familyUpdates}
     />
   )
 }

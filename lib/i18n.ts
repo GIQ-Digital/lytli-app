@@ -725,6 +725,31 @@ const dict = {
     pt: "Não foi possível atualizar as notificações. Tente de novo.",
     es: "No se pudieron actualizar las notificaciones. Inténtalo de nuevo.",
   },
+  patientStatus: { en: "Patient status", pt: "Status do paciente", es: "Estado del paciente" },
+  patientStatusQuestion: {
+    en: "How is {name} doing right now?",
+    pt: "Como {name} está agora?",
+    es: "¿Cómo está {name} ahora?",
+  },
+  statusWell: { en: "Doing well", pt: "Bem", es: "Bien" },
+  statusSoso: { en: "So so", pt: "Mais ou menos", es: "Más o menos" },
+  statusUnwell: { en: "Not doing well", pt: "Não está bem", es: "No está bien" },
+  patientStatusHint: {
+    en: "Your family is notified when the status changes.",
+    pt: "Sua família é avisada quando o status muda.",
+    es: "Tu familia recibe un aviso cuando el estado cambia.",
+  },
+  patientStatusFailed: {
+    en: "Couldn't save the status. Please try again.",
+    pt: "Não foi possível salvar o status. Tente de novo.",
+    es: "No se pudo guardar el estado. Inténtalo de nuevo.",
+  },
+  familyUpdates: { en: "Family updates", pt: "Atualizações da família", es: "Novedades de la familia" },
+  familyUpdatesHint: {
+    en: "Patient status and medication updates from the caregiver",
+    pt: "Status do paciente e medicamentos atualizados pelo cuidador",
+    es: "Estado del paciente y medicamentos actualizados por el cuidador",
+  },
 } satisfies Record<string, Entry>
 
 export type TKey = keyof typeof dict

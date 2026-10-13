@@ -11,6 +11,8 @@ import { toggleDose, type Dose } from "@/app/actions/medications"
 import { toggleTask, addTask, type TaskRow } from "@/app/actions/tasks"
 import type { AppointmentRow } from "@/app/actions/appointments"
 import { cn } from "@/lib/utils"
+import { PatientStatusCard } from "@/components/patient-status-card"
+import type { PatientStatusValue } from "@/app/actions/patient-status"
 
 export function HomeClient({
   name,
@@ -19,6 +21,8 @@ export function HomeClient({
   tasks,
   nextAppt,
   adherence,
+  careProfileId,
+  patientStatus,
 }: {
   name: string
   recipientName: string
@@ -26,6 +30,8 @@ export function HomeClient({
   tasks: TaskRow[]
   nextAppt: AppointmentRow | null
   adherence: number
+  careProfileId: number | null
+  patientStatus: { status: PatientStatusValue; updatedAt: string } | null
 }) {
   const { t, lang } = useLanguage()
   const [pending, startTransition] = useTransition()
@@ -73,6 +79,15 @@ export function HomeClient({
         <CardLabel withDot>{t("dailyTip")}</CardLabel>
         <p className="text-[13px] leading-relaxed text-green-darker">{t("dailyTipContent")}</p>
       </div>
+
+      {careProfileId !== null && (
+        <PatientStatusCard
+          careProfileId={careProfileId}
+          recipientName={recipientName}
+          initialStatus={patientStatus?.status ?? null}
+          updatedAt={patientStatus?.updatedAt ?? null}
+        />
+      )}
 
       {/* Next dose / adherence */}
       <div className="mb-3.5 grid grid-cols-2 gap-3">

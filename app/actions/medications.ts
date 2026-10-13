@@ -6,6 +6,28 @@ import { getUserId } from "@/lib/auth-helpers"
 import { and, eq, gte } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { parseTimes, todayKey } from "@/lib/schedule"
+import { after } from "next/server"
+import { notifyFamily } from "@/lib/family-notify"
+
+function notifyFamilyOfDose(userId: string, medName: string, status: "taken" | "missed") {
+  after(() =>
+    notifyFamily(
+      userId,
+      { pt: "Atualização de medicamento", en: "Medication update", es: "Actualización de medicamento" },
+      status === "taken"
+        ? {
+            pt: `${medName} foi marcado como tomado`,
+            en: `${medName} was marked as done`,
+            es: `${medName} fue marcado como tomado`,
+          }
+        : {
+            pt: `${medName} foi marcado como perdido`,
+            en: `${medName} was marked as missed`,
+            es: `${medName} fue marcado como omitido`,
+          },
+    ),
+  )
+}
 
 export type MedRow = typeof medications.$inferSelect
 
@@ -81,7 +103,7 @@ export async function setDoseStatus(medicationId: number, time: string, status: 
   if (!/^\d{1,2}:\d{2}$/.test(time)) throw new Error("Invalid time")
 
   const [med] = await db
-    .select({ id: medications.id })
+    .select({ id: medications.id, name: medications.name })
     .from(medications)
     .where(and(eq(medications.id, medicationId), eq(medications.userId, userId)))
     .limit(1)
@@ -102,6 +124,7 @@ export async function setDoseStatus(medicationId: number, time: string, status: 
   } else {
     await db.insert(medLogs).values({ userId, medicationId, scheduledFor, status })
   }
+  if (status !== "pending" && existing[0]?.status !== status) notifyFamilyOfDose(userId, med.name, status)
   revalidatePath("/medications")
   revalidatePath("/home")
   return { ok: true }
@@ -123,12 +146,21 @@ export async function toggleDose(medicationId: number, time: string) {
     )
     .limit(1)
 
+  const becameTaken = existing.length === 0 || existing[0].status !== "taken"
   if (existing.length > 0 && existing[0].status !== "taken") {
     await db.update(medLogs).set({ status: "taken" }).where(eq(medLogs.id, existing[0].id))
   } else if (existing.length > 0) {
     await db.delete(medLogs).where(eq(medLogs.id, existing[0].id))
   } else {
     await db.insert(medLogs).values({ userId, medicationId, scheduledFor, status: "taken" })
+  }
+  if (becameTaken) {
+    const [med] = await db
+      .select({ name: medications.name })
+      .from(medications)
+      .where(and(eq(medications.id, medicationId), eq(medications.userId, userId)))
+      .limit(1)
+    if (med) notifyFamilyOfDose(userId, med.name, "taken")
   }
   revalidatePath("/medications")
   revalidatePath("/home")

@@ -167,6 +167,29 @@ export const pushSubscriptions = pgTable("push_subscriptions", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
 
+// Latest row per careProfileId is the current status; older rows are history.
+export const patientStatus = pgTable("patient_status", {
+  id: serial("id").primaryKey(),
+  userId: text("userId").notNull(),
+  careProfileId: integer("careProfileId").notNull(),
+  status: text("status").notNull(), // well | soso | unwell
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+export const notificationPrefs = pgTable("notification_prefs", {
+  userId: text("userId").primaryKey(),
+  language: text("language").notNull().default("pt"),
+  timeZone: text("timeZone"),
+  familyUpdates: boolean("familyUpdates").notNull().default(true),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+// One row per reminder already sent, so the scheduled check never sends twice.
+export const notificationLog = pgTable("notification_log", {
+  key: text("key").primaryKey(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
 export const subscriptions = pgTable("subscriptions", {
   id: serial("id").primaryKey(),
   userId: text("userId").notNull().unique(),

@@ -11,6 +11,7 @@ import { SheetModal, Field, inputClass } from "@/components/sheet-modal"
 import { LogoutButton } from "@/components/logout-button"
 import { ProCheckout } from "@/components/pro-checkout"
 import { NotificationsToggle } from "@/components/notifications-toggle"
+import { FamilyUpdatesToggle } from "@/components/family-updates-toggle"
 import { authClient } from "@/lib/auth-client"
 import { cancelSubscriptionAtPeriodEnd } from "@/app/actions/account"
 
@@ -23,6 +24,7 @@ export function AccountClient({
   trialDaysLeft,
   cancelAtPeriodEnd,
   canCancel,
+  familyUpdates,
 }: {
   name: string
   email: string
@@ -30,6 +32,7 @@ export function AccountClient({
   trialDaysLeft: number | null
   cancelAtPeriodEnd: boolean
   canCancel: boolean
+  familyUpdates: boolean
 }) {
   const { t } = useLanguage()
   const router = useRouter()
@@ -131,7 +134,8 @@ export function AccountClient({
         )}
       </section>
 
-      <NotificationsToggle />
+        <NotificationsToggle />
+        <FamilyUpdatesToggle initialEnabled={familyUpdates} />
 
       <section className="mb-3.5 rounded-2xl border border-border bg-card px-4">
         <button
