@@ -6,8 +6,9 @@ import { useLanguage } from "@/components/language-provider"
 import { LanguageToggle } from "@/components/language-toggle"
 import { LytliLogo } from "@/components/lytli-logo"
 import { authClient } from "@/lib/auth-client"
+import { INVITE_COOKIE, inviteAcceptPath } from "@/lib/invite"
 
-const CALLBACK_URL = "/home"
+const DEFAULT_CALLBACK_URL = "/home"
 
 const inputClass =
   "w-full rounded-xl border border-border bg-card px-4 py-3.5 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring/40"
@@ -47,8 +48,14 @@ function Divider({ label }: { label: string }) {
   )
 }
 
-export function LoginForm() {
+function rememberInvite(code: string | null) {
+  if (!code) return
+  document.cookie = `${INVITE_COOKIE}=${encodeURIComponent(code)}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`
+}
+
+export function LoginForm({ invite = null }: { invite?: string | null }) {
   const { t } = useLanguage()
+  const CALLBACK_URL = invite ? inviteAcceptPath(invite) : DEFAULT_CALLBACK_URL
   const [mode, setMode] = useState<"password" | "magic">("password")
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState("")
@@ -65,6 +72,7 @@ export function LoginForm() {
   async function handleGoogle() {
     setError(null)
     setGoogleLoading(true)
+    rememberInvite(invite)
     const { error } = await authClient.signIn.social({
       provider: "google",
       callbackURL: CALLBACK_URL,
@@ -80,6 +88,7 @@ export function LoginForm() {
     e.preventDefault()
     setError(null)
     setLoading(true)
+    rememberInvite(invite)
     const trimmedEmail = email.trim()
     const { error } = isSignUp
       ? await authClient.signUp.email({
@@ -105,6 +114,7 @@ export function LoginForm() {
     e.preventDefault()
     setError(null)
     setLoading(true)
+    rememberInvite(invite)
     const { error } = await authClient.signIn.magicLink({
       email: email.trim(),
       callbackURL: CALLBACK_URL,

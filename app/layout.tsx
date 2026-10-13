@@ -4,7 +4,14 @@ import { LanguageProvider } from "@/components/language-provider"
 import { ServiceWorkerRegister } from "@/components/service-worker-register"
 import "./globals.css"
 
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000"
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Lytli — Caregiving made lighter",
   description: "Lytli is a wellness companion for caregivers. Caregiving made lighter.",
   generator: "v0.app",

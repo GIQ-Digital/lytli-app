@@ -6,6 +6,7 @@ import { and, desc, eq } from "drizzle-orm"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
+import { sendInviteEmail, normalizeLang } from "@/lib/invite-email"
 
 async function getUserId() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -30,8 +31,20 @@ export async function getFamily() {
   return { members, invites }
 }
 
-export async function inviteFamily(input: { name: string; email?: string; role?: string }) {
-  const userId = await getUserId()
+async function appOrigin() {
+  const h = await headers()
+  const host = h.get("x-forwarded-host") ?? h.get("host")
+  if (host) {
+    const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https")
+    return `${proto}://${host}`
+  }
+  return process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : ""
+}
+
+export async function inviteFamily(input: { name: string; email?: string; role?: string; lang?: string }) {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) throw new Error("Unauthorized")
+  const userId = session.user.id
   const name = input.name.trim()
   if (!name) throw new Error("Name required")
   const code = makeCode()
@@ -46,6 +59,20 @@ export async function inviteFamily(input: { name: string; email?: string; role?:
       status: "pending",
     })
     .returning()
+
+  if (invite.email) {
+    try {
+      await sendInviteEmail({
+        to: invite.email,
+        inviteUrl: `${await appOrigin()}/login?invite=${invite.code}`,
+        inviterName: session.user.name || session.user.email,
+        lang: normalizeLang(input.lang),
+      })
+    } catch (err) {
+      console.error("[family] Failed to send invite email:", err)
+    }
+  }
+
   revalidatePath("/family")
   return invite
 }
