@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState, useTransition } from "react"
-import { Plus, Trash2 } from "lucide-react"
+import { Check, MapPin, Plus, Share2, Trash2 } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { ScreenHeader } from "@/components/screen-header"
 import { SectionLabel } from "@/components/lytli-ui"
@@ -15,6 +15,7 @@ export function ScheduleClient({ appointments }: { appointments: AppointmentRow[
   const { t, lang } = useLanguage()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
+  const [copiedId, setCopiedId] = useState<AppointmentRow["id"] | null>(null)
   const [form, setForm] = useState({ title: "", doctor: "", location: "", startsAt: "", reminderMinutes: 60 })
 
   const now = new Date()
@@ -39,6 +40,34 @@ export function ScheduleClient({ appointments }: { appointments: AppointmentRow[
   }, [viewYear, viewMonth])
 
   const monthLabel = now.toLocaleDateString(lang, { month: "long", year: "numeric" })
+
+  async function shareAppointment(a: AppointmentRow) {
+    const d = new Date(a.startsAt)
+    const lines = [
+      a.title,
+      d.toLocaleDateString(lang, { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
+      d.toLocaleTimeString(lang, { hour: "2-digit", minute: "2-digit" }),
+    ]
+    if (a.location?.trim()) lines.push(a.location.trim())
+    const text = lines.join("\n")
+
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: a.title, text })
+        return
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedId(a.id)
+      setTimeout(() => setCopiedId((id) => (id === a.id ? null : id)), 2000)
+    } catch (err) {
+      console.error("Failed to copy appointment", err)
+    }
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -107,6 +136,31 @@ export function ScheduleClient({ appointments }: { appointments: AppointmentRow[
                 </div>
                 <span className="inline-block rounded-full bg-mint px-2.5 py-0.5 text-[11px] text-green-darker">
                   {t("reminderSet")}
+                </span>
+                <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => shareAppointment(a)}
+                    className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary cursor-pointer"
+                  >
+                    {copiedId === a.id ? <Check className="h-3.5 w-3.5 text-primary" /> : <Share2 className="h-3.5 w-3.5" />}
+                    {copiedId === a.id ? t("copied") : t("shareAppointment")}
+                  </button>
+                  {a.location?.trim() ? (
+                    <a
+                      href={`https://maps.google.com/?q=${encodeURIComponent(a.location.trim())}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={t("openInMapsLabel")}
+                      className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+                    >
+                      <MapPin className="h-3.5 w-3.5" />
+                      {t("openInMaps")}
+                    </a>
+                  ) : null}
+                </div>
+                <span className="sr-only" aria-live="polite">
+                  {copiedId === a.id ? t("copied") : ""}
                 </span>
               </div>
               <button

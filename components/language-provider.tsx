@@ -13,6 +13,11 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 const STORAGE_KEY = "lytli-lang"
 
+// Mirrors the language into a cookie so server-sent emails can match the app language.
+function syncLangCookie(lang: Lang) {
+  document.cookie = `${STORAGE_KEY}=${lang}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en")
 
@@ -20,12 +25,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const stored = localStorage.getItem(STORAGE_KEY) as Lang | null
     if (stored === "en" || stored === "pt" || stored === "es") {
       setLangState(stored)
+      syncLangCookie(stored)
     }
   }, [])
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next)
     localStorage.setItem(STORAGE_KEY, next)
+    syncLangCookie(next)
     // Real implementation in Cursor: also persist to patients.language in Supabase
   }, [])
 

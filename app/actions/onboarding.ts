@@ -9,9 +9,18 @@ export async function completeOnboarding(input: {
   name: string
   age?: string
   relationship?: string
-  challenge?: string
+  challenges?: string[]
 }) {
   const userId = await getUserId()
+
+  const challenges = Array.isArray(input.challenges)
+    ? input.challenges
+        .filter((c): c is string => typeof c === "string")
+        .map((c) => c.trim().slice(0, 100))
+        .filter(Boolean)
+        .slice(0, 3)
+    : []
+  const challengeNotes = challenges.length > 0 ? challenges.join(", ") : null
 
   const existing = await getPrimaryRecipient(userId)
   if (existing) {
@@ -21,7 +30,7 @@ export async function completeOnboarding(input: {
         name: input.name.trim(),
         age: input.age ? Number(input.age) : null,
         relationship: input.relationship ?? null,
-        notes: input.challenge ?? null,
+        notes: challengeNotes,
       })
       .where(eq(careRecipient.id, existing.id))
   } else {
@@ -30,7 +39,7 @@ export async function completeOnboarding(input: {
       name: input.name.trim(),
       age: input.age ? Number(input.age) : null,
       relationship: input.relationship ?? null,
-      notes: input.challenge ?? null,
+      notes: challengeNotes,
       isPrimary: true,
     })
   }

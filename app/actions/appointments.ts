@@ -5,6 +5,8 @@ import { appointments } from "@/lib/db/schema"
 import { getUserId } from "@/lib/auth-helpers"
 import { and, eq, gte, asc } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
+import { after } from "next/server"
+import { queueUpcomingForUser } from "@/lib/notification-queue"
 
 export type AppointmentRow = typeof appointments.$inferSelect
 
@@ -47,6 +49,7 @@ export async function addAppointment(input: {
     reminderMinutes: input.reminderMinutes ?? 60,
     notes: input.notes?.trim() || null,
   })
+  after(() => queueUpcomingForUser(userId).catch((err) => console.error("[appointments] Queue failed:", err)))
   revalidatePath("/schedule")
   revalidatePath("/home")
   return { ok: true }

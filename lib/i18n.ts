@@ -198,9 +198,14 @@ const dict = {
     es: "👨‍👩‍👧 Coordinación familiar",
   },
   challengeOrganized: {
-    en: "📋 Staying organized",
-    pt: "📋 Me organizar",
-    es: "📋 Mantenerme organizado",
+  en: "📋 Staying organized",
+  pt: "📋 Me organizar",
+  es: "📋 Mantenerme organizado",
+  },
+  challengeSelectedCount: {
+  en: "{n}/3 selected",
+  pt: "{n}/3 selecionados",
+  es: "{n}/3 seleccionados",
   },
   beforeBegin: {
     en: "Before we begin",
@@ -393,10 +398,13 @@ const dict = {
   schedule: { en: "Schedule", pt: "Agenda", es: "Agenda" },
   upcoming: { en: "Upcoming", pt: "Próximas", es: "Próximas" },
   reminderSet: {
-    en: "Reminder set",
-    pt: "Lembrete definido",
-    es: "Recordatorio activo",
+  en: "Reminder set",
+  pt: "Lembrete definido",
+  es: "Recordatorio activo",
   },
+  shareAppointment: { en: "Share", pt: "Compartilhar", es: "Compartir" },
+  openInMaps: { en: "Maps", pt: "Mapa", es: "Mapa" },
+  openInMapsLabel: { en: "Open address in Google Maps", pt: "Abrir endereço no Google Maps", es: "Abrir dirección en Google Maps" },
   addAppointment: {
     en: "+ Add appointment",
     pt: "+ Adicionar consulta",
@@ -543,7 +551,7 @@ const dict = {
   privacyBody: {
     en: "1. Data we collect\nAccount details, the name/age/relationship of the person you care for, medications and appointments you add, and wellness check-ins.\n\n2. How we use it\nTo provide reminders, organization, family sharing, and general wellness tips.\n\n3. Family sharing\nYou control what is shared with your Family Circle through sharing settings.\n\n4. AI sessions\nYour wellness sessions are stored to show your history. They are NOT used to train AI models.\n\n5. Security\nData is encrypted in transit and at rest.\n\n6. Your rights\nYou may access, correct, or delete your data at any time.\n\n7. Regional laws\nWe comply with LGPD (Brazil) and CCPA (California).\n\n8. Age requirement\nLytli is for adults 18 and older only.\n\n9. Contact\nEmail admin@giqdigital.com.",
     pt: "1. Dados que coletamos\nInformações da conta, nome/idade/relação da pessoa que você cuida, medicamentos e consultas que você adiciona e check-ins de bem-estar.\n\n2. Como usamos\nPara fornecer lembretes, organização, compartilhamento familiar e dicas gerais de bem-estar.\n\n3. Compartilhamento familiar\nVocê controla o que é compartilhado com seu Círculo Familiar nas configurações de compartilhamento.\n\n4. Sessões de IA\nSuas sessões de bem-estar são armazenadas para mostrar seu histórico. Elas NÃO são usadas para treinar modelos de IA.\n\n5. Segurança\nOs dados são criptografados em trânsito e em repouso.\n\n6. Seus direitos\nVocê pode acessar, corrigir ou excluir seus dados a qualquer momento.\n\n7. Leis regionais\nCumprimos a LGPD (Brasil) e a CCPA (Califórnia).\n\n8. Requisito de idade\nA Lytli é apenas para adultos com 18 anos ou mais.\n\n9. Contato\nEscreva para admin@giqdigital.com.",
-    es: "1. Datos que recopilamos\nDatos de la cuenta, nombre/edad/relación de la persona que cuidas, medicamentos y citas que agregas, y check-ins de bienestar.\n\n2. Cómo los usamos\nPara ofrecer recordatorios, organización, compartir con la familia y consejos generales de bienestar.\n\n3. Compartir con la familia\nTú controlas lo que se comparte con tu Círculo Familiar mediante la configuración de compartir.\n\n4. Sesiones de IA\nTus sesiones de bienestar se almacenan para mostrar tu historial. NO se usan para entrenar modelos de IA.\n\n5. Seguridad\nLos datos se cifran en tránsito y en reposo.\n\n6. Tus derechos\nPuedes acceder, corregir o eliminar tus datos en cualquier momento.\n\n7. Leyes regionales\nCumplimos con LGPD (Brasil) y CCPA (California).\n\n8. Requisito de edad\nLytli es solo para adultos de 18 años o más.\n\n9. Contacto\nEscribe a admin@giqdigital.com.",
+    es: "1. Datos que recopilamos\nDatos de la cuenta, nombre/edad/relación de la persona que cuidas, medicamentos y citas que agregas, y check-ins de bienestar.\n\n2. Cómo los usamos\nPara ofrecer recordatorios, organización, compartir con la familia y consejos generales de bienestar.\n\n3. Compartir con la familia\nTú controlas lo que se comparte con tu Círculo Familiar mediante la configuración de compartir.\n\n4. Sesiones de IA\nTus sesiones de bienestar se almacenan para mostrar tu historial. NO se usan para entrenar modelos de IA.\n\n5. Seguridad\nLos datos se cifran en tránsito y en reposo.\n\n6. Tus derechos\nPuedes acceder, corregir o eliminar tus datos en cualquier momento.\n\n7. Leyes regionales\nCumplimos con LGPD (Brasil) y CCPA (California).\n\n8. Requisito de edad\nLytli es solo para adultos de 18 a��os o más.\n\n9. Contacto\nEscribe a admin@giqdigital.com.",
   },
 
   // Legal — Disclaimer
@@ -588,6 +596,9 @@ const dict = {
   medNotes: { en: "Notes", pt: "Observações", es: "Notas" },
   noMeds: { en: "No medications yet. Add the first one to start tracking doses.", pt: "Nenhum medicamento ainda. Adicione o primeiro para começar a acompanhar as doses.", es: "Aún no hay medicamentos. Agrega el primero para empezar a controlar las dosis." },
   deleteMedConfirm: { en: "Remove this medication?", pt: "Remover este medicamento?", es: "¿Quitar este medicamento?" },
+  edit: { en: "Edit", pt: "Editar", es: "Editar" },
+  editMedication: { en: "Edit medication", pt: "Editar medicamento", es: "Editar medicamento" },
+  doseStatusHint: { en: "Tap to change status", pt: "Toque para mudar o status", es: "Toca para cambiar el estado" },
 
   // Appointment form
   aptTitle: { en: "Title", pt: "Título", es: "Título" },
@@ -656,6 +667,89 @@ const dict = {
   perkSummaries: { en: "Weekly care summaries", pt: "Resumos semanais de cuidado", es: "Resúmenes semanales de cuidado" },
   checkoutTitle: { en: "Lytli Pro", pt: "Lytli Pro", es: "Lytli Pro" },
   paymentSuccess: { en: "Welcome to Pro! Your subscription is active.", pt: "Bem-vindo ao Pro! Sua assinatura está ativa.", es: "¡Bienvenido a Pro! Tu suscripción está activa." },
+
+  // PWA install prompt
+  installTitle: { en: "Install Lytli on your phone", pt: "Instale o Lytli no seu celular", es: "Instala Lytli en tu celular" },
+  installBody: {
+    en: "Open it from your home screen, full screen, in one tap.",
+    pt: "Abra direto da tela inicial, em tela cheia, com um toque.",
+    es: "Ábrelo desde tu pantalla de inicio, a pantalla completa, con un toque.",
+  },
+  installButton: { en: "Install", pt: "Instalar", es: "Instalar" },
+  installNotNow: { en: "Not now", pt: "Agora não", es: "Ahora no" },
+  installGotIt: { en: "Got it", pt: "Entendi", es: "Entendido" },
+  installIosStep1: { en: "Tap Share in the browser bar", pt: "Toque em Compartilhar na barra do navegador", es: "Toca Compartir en la barra del navegador" },
+  installIosStep2: { en: "Choose Add to Home Screen", pt: "Escolha Adicionar à Tela de Início", es: "Elige Agregar a inicio" },
+  // Account screen
+  openAccount: { en: "Open my account", pt: "Abrir minha conta", es: "Abrir mi cuenta" },
+  freePlanLabel: { en: "Free plan", pt: "Plano gratuito", es: "Plan gratuito" },
+  freePlanHint: {
+    en: "Get more AI sessions and family seats with Pro.",
+    pt: "Tenha mais sessões de IA e vagas para a família com o Pro.",
+    es: "Obtén más sesiones de IA y lugares para la familia con Pro.",
+  },
+  trialDaysLeft: { en: "{n} days left in your free trial", pt: "Faltam {n} dias de teste grátis", es: "Quedan {n} días de prueba gratis" },
+  trialOneDayLeft: { en: "1 day left in your free trial", pt: "Falta 1 dia de teste grátis", es: "Queda 1 día de prueba gratis" },
+  cancelFailed: {
+    en: "We couldn't cancel your subscription. Please try again.",
+    pt: "Não foi possível cancelar sua assinatura. Tente de novo.",
+    es: "No pudimos cancelar tu suscripción. Inténtalo de nuevo.",
+  },
+  changePassword: { en: "Change password", pt: "Alterar senha", es: "Cambiar contraseña" },
+  currentPassword: { en: "Current password", pt: "Senha atual", es: "Contraseña actual" },
+  newPassword: { en: "New password", pt: "Nova senha", es: "Nueva contraseña" },
+  confirmNewPassword: { en: "Confirm new password", pt: "Confirme a nova senha", es: "Confirma la nueva contraseña" },
+  passwordTooShort: { en: "Use at least 8 characters.", pt: "Use pelo menos 8 caracteres.", es: "Usa al menos 8 caracteres." },
+  passwordMismatch: { en: "Passwords don't match.", pt: "As senhas não coincidem.", es: "Las contraseñas no coinciden." },
+  passwordChangeFailed: {
+    en: "Couldn't change your password. Check your current password and try again.",
+    pt: "Não foi possível alterar a senha. Confira a senha atual e tente de novo.",
+    es: "No se pudo cambiar la contraseña. Revisa tu contraseña actual e inténtalo de nuevo.",
+  },
+  passwordChanged: { en: "Your password was changed.", pt: "Sua senha foi alterada.", es: "Tu contraseña fue cambiada." },
+  notifications: { en: "Notifications", pt: "Notificações", es: "Notificaciones" },
+  notificationsEnabled: { en: "Enabled on this device", pt: "Ativadas neste aparelho", es: "Activadas en este dispositivo" },
+  notificationsDisabled: { en: "Disabled", pt: "Desativadas", es: "Desactivadas" },
+  notificationsUnsupported: {
+    en: "Not supported on this browser",
+    pt: "Não suportadas neste navegador",
+    es: "No compatibles con este navegador",
+  },
+  notificationsBlocked: {
+    en: "Blocked — allow them in your browser settings",
+    pt: "Bloqueadas — permita nas configurações do navegador",
+    es: "Bloqueadas — permítelas en la configuración del navegador",
+  },
+  notificationsFailed: {
+    en: "Couldn't update notifications. Please try again.",
+    pt: "Não foi possível atualizar as notificações. Tente de novo.",
+    es: "No se pudieron actualizar las notificaciones. Inténtalo de nuevo.",
+  },
+  patientStatus: { en: "Patient status", pt: "Status do paciente", es: "Estado del paciente" },
+  patientStatusQuestion: {
+    en: "How is {name} doing right now?",
+    pt: "Como {name} está agora?",
+    es: "¿Cómo está {name} ahora?",
+  },
+  statusWell: { en: "Doing well", pt: "Bem", es: "Bien" },
+  statusSoso: { en: "So so", pt: "Mais ou menos", es: "Más o menos" },
+  statusUnwell: { en: "Not doing well", pt: "Não está bem", es: "No está bien" },
+  patientStatusHint: {
+    en: "Your family is notified when the status changes.",
+    pt: "Sua família é avisada quando o status muda.",
+    es: "Tu familia recibe un aviso cuando el estado cambia.",
+  },
+  patientStatusFailed: {
+    en: "Couldn't save the status. Please try again.",
+    pt: "Não foi possível salvar o status. Tente de novo.",
+    es: "No se pudo guardar el estado. Inténtalo de nuevo.",
+  },
+  familyUpdates: { en: "Family updates", pt: "Atualizações da família", es: "Novedades de la familia" },
+  familyUpdatesHint: {
+    en: "Patient status and medication updates from the caregiver",
+    pt: "Status do paciente e medicamentos atualizados pelo cuidador",
+    es: "Estado del paciente y medicamentos actualizados por el cuidador",
+  },
 } satisfies Record<string, Entry>
 
 export type TKey = keyof typeof dict

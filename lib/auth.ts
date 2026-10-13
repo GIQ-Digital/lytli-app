@@ -1,6 +1,22 @@
 import { betterAuth } from "better-auth"
 import { magicLink } from "better-auth/plugins"
+import { createAuthMiddleware } from "better-auth/api"
 import { pool } from "@/lib/db"
+import { resolveEmailLang, sendWelcomeEmail } from "@/lib/welcome-email"
+
+// Production must use the exact host registered in Google Cloud Console, otherwise
+// the OAuth state cookie and the callback land on different domains and the
+// login silently stalls after the user picks their Google account.
+const PRODUCTION_APP_URL = "https://app.lytli.com"
+const isProductionDeploy = process.env.VERCEL_ENV === "production"
+
+const baseURL =
+  process.env.BETTER_AUTH_URL ??
+  (isProductionDeploy
+    ? PRODUCTION_APP_URL
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.V0_RUNTIME_URL)
 
 async function deliverMagicLink({ email, url }: { email: string; url: string }) {
   // In production, send a real email. If a Resend API key is configured we use
@@ -46,13 +62,7 @@ async function deliverMagicLink({ email, url }: { email: string; url: string }) 
 
 export const auth = betterAuth({
   database: pool,
-  baseURL:
-    process.env.BETTER_AUTH_URL ??
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : process.env.V0_RUNTIME_URL),
+  baseURL,
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -66,6 +76,9 @@ export const auth = betterAuth({
           google: {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            ...(isProductionDeploy
+              ? { redirectURI: `${PRODUCTION_APP_URL}/api/auth/callback/google` }
+              : {}),
           },
         },
       }
@@ -89,11 +102,20 @@ export const auth = betterAuth({
           ].filter((url): url is string => Boolean(url)),
         ]
       : []),
+    ...(isProductionDeploy ? [PRODUCTION_APP_URL] : []),
     ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
     ...(process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? [`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`]
       : []),
   ],
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/sign-up/email") return
+      const user = ctx.context.newSession?.user
+      if (!user?.email) return
+      await sendWelcomeEmail({ to: user.email, lang: resolveEmailLang(ctx.headers) })
+    }),
+  },
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,

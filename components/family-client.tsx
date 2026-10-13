@@ -31,7 +31,7 @@ export function FamilyClient({
   members: Member[]
   invites: Invite[]
 }) {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [form, setForm] = useState({ name: "", email: "", role: "viewer" })
@@ -44,7 +44,7 @@ export function FamilyClient({
     e.preventDefault()
     if (!form.name.trim()) return
     startTransition(async () => {
-      await inviteFamily(form)
+      await inviteFamily({ ...form, lang })
       setForm({ name: "", email: "", role: "viewer" })
       setOpen(false)
     })

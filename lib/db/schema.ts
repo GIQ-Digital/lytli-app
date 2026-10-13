@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, serial, integer } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, boolean, serial, integer, jsonb } from "drizzle-orm/pg-core"
 
 // --- Better Auth required tables -------------------------------------------
 // Column names are camelCase to match Better Auth's defaults. Do not rename.
@@ -153,6 +153,56 @@ export const aiSessions = pgTable("ai_sessions", {
   userId: text("userId").notNull(),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  endpoint: text("endpoint").notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+// Latest row per careProfileId is the current status; older rows are history.
+export const patientStatus = pgTable("patient_status", {
+  id: serial("id").primaryKey(),
+  userId: text("userId").notNull(),
+  careProfileId: integer("careProfileId").notNull(),
+  status: text("status").notNull(), // well | soso | unwell
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+export const notificationPrefs = pgTable("notification_prefs", {
+  userId: text("userId").primaryKey(),
+  language: text("language").notNull().default("pt"),
+  timeZone: text("timeZone"),
+  familyUpdates: boolean("familyUpdates").notNull().default(true),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+})
+
+// One row per reminder already sent, so the scheduled check never sends twice.
+export const notificationLog = pgTable("notification_log", {
+  key: text("key").primaryKey(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+// Medication and appointment reminders waiting to be pushed at an exact time.
+// dedupeKey stops the daily cron and Home visits from queueing the same reminder twice.
+export const notificationQueue = pgTable("notification_queue", {
+  id: serial("id").primaryKey(),
+  userId: text("userId").notNull(),
+  type: text("type").notNull(), // medication | appointment
+  dedupeKey: text("dedupeKey").notNull().unique(),
+  scheduledAt: timestamp("scheduledAt").notNull(),
+  payload: jsonb("payload").notNull(),
+  sent: boolean("sent").notNull().default(false),
+  sentAt: timestamp("sentAt"),
+  outcome: text("outcome"), // push | email | none | skipped
+  runId: text("runId"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
 

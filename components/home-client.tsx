@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import Link from "next/link"
-import { Plus, Check, Pill, Calendar } from "lucide-react"
+import { Plus, Check, Pill, Calendar, UserRound } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { LanguageToggle } from "@/components/language-toggle"
 import { SectionLabel, CardLabel } from "@/components/lytli-ui"
@@ -11,6 +11,8 @@ import { toggleDose, type Dose } from "@/app/actions/medications"
 import { toggleTask, addTask, type TaskRow } from "@/app/actions/tasks"
 import type { AppointmentRow } from "@/app/actions/appointments"
 import { cn } from "@/lib/utils"
+import { PatientStatusCard } from "@/components/patient-status-card"
+import type { PatientStatusValue } from "@/app/actions/patient-status"
 
 export function HomeClient({
   name,
@@ -19,6 +21,8 @@ export function HomeClient({
   tasks,
   nextAppt,
   adherence,
+  careProfileId,
+  patientStatus,
 }: {
   name: string
   recipientName: string
@@ -26,6 +30,8 @@ export function HomeClient({
   tasks: TaskRow[]
   nextAppt: AppointmentRow | null
   adherence: number
+  careProfileId: number | null
+  patientStatus: { status: PatientStatusValue; updatedAt: string } | null
 }) {
   const { t, lang } = useLanguage()
   const [pending, startTransition] = useTransition()
@@ -56,7 +62,16 @@ export function HomeClient({
             {t("caringFor")} {recipientName}
           </div>
         </div>
-        <LanguageToggle variant="pills" />
+        <div className="flex items-center gap-2">
+          <LanguageToggle variant="pills" />
+          <Link
+            href="/account"
+            aria-label={t("openAccount")}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-green-dark transition-colors hover:bg-secondary"
+          >
+            <UserRound className="h-[18px] w-[18px]" />
+          </Link>
+        </div>
       </div>
 
       {/* Daily tip */}
@@ -64,6 +79,15 @@ export function HomeClient({
         <CardLabel withDot>{t("dailyTip")}</CardLabel>
         <p className="text-[13px] leading-relaxed text-green-darker">{t("dailyTipContent")}</p>
       </div>
+
+      {careProfileId !== null && (
+        <PatientStatusCard
+          careProfileId={careProfileId}
+          recipientName={recipientName}
+          initialStatus={patientStatus?.status ?? null}
+          updatedAt={patientStatus?.updatedAt ?? null}
+        />
+      )}
 
       {/* Next dose / adherence */}
       <div className="mb-3.5 grid grid-cols-2 gap-3">

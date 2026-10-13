@@ -6,6 +6,29 @@ import { getUserId } from "@/lib/auth-helpers"
 import { and, eq, gte } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { parseTimes, todayKey } from "@/lib/schedule"
+import { after } from "next/server"
+import { notifyFamily } from "@/lib/family-notify"
+import { queueUpcomingForUser } from "@/lib/notification-queue"
+
+function notifyFamilyOfDose(userId: string, medName: string, status: "taken" | "missed") {
+  after(() =>
+    notifyFamily(
+      userId,
+      { pt: "Atualização de medicamento", en: "Medication update", es: "Actualización de medicamento" },
+      status === "taken"
+        ? {
+            pt: `${medName} foi marcado como tomado`,
+            en: `${medName} was marked as done`,
+            es: `${medName} fue marcado como tomado`,
+          }
+        : {
+            pt: `${medName} foi marcado como perdido`,
+            en: `${medName} was marked as missed`,
+            es: `${medName} fue marcado como omitido`,
+          },
+    ),
+  )
+}
 
 export type MedRow = typeof medications.$inferSelect
 
@@ -35,6 +58,7 @@ export async function addMedication(input: {
     times: input.times?.trim() || null,
     notes: input.notes?.trim() || null,
   })
+  after(() => queueUpcomingForUser(userId).catch((err) => console.error("[medications] Queue failed:", err)))
   revalidatePath("/medications")
   revalidatePath("/home")
   revalidatePath("/schedule")
@@ -44,6 +68,66 @@ export async function addMedication(input: {
 export async function deleteMedication(id: number) {
   const userId = await getUserId()
   await db.update(medications).set({ active: false }).where(and(eq(medications.id, id), eq(medications.userId, userId)))
+  revalidatePath("/medications")
+  revalidatePath("/home")
+  return { ok: true }
+}
+
+export async function updateMedication(
+  id: number,
+  input: { name: string; dosage?: string; frequency?: string; times?: string; notes?: string },
+) {
+  const userId = await getUserId()
+  if (!Number.isInteger(id) || id <= 0) throw new Error("Invalid id")
+  if (!input.name?.trim()) throw new Error("Name required")
+  await db
+    .update(medications)
+    .set({
+      name: input.name.trim().slice(0, 120),
+      dosage: input.dosage?.trim().slice(0, 60) || null,
+      frequency: input.frequency?.trim().slice(0, 60) || null,
+      times: input.times?.trim().slice(0, 200) || null,
+      notes: input.notes?.trim().slice(0, 500) || null,
+    })
+    .where(and(eq(medications.id, id), eq(medications.userId, userId)))
+  after(() => queueUpcomingForUser(userId).catch((err) => console.error("[medications] Queue failed:", err)))
+  revalidatePath("/medications")
+  revalidatePath("/home")
+  revalidatePath("/schedule")
+  return { ok: true }
+}
+
+export type DoseStatus = "pending" | "taken" | "missed"
+
+/** Set today's status for one dose. "pending" removes the log row. */
+export async function setDoseStatus(medicationId: number, time: string, status: DoseStatus) {
+  const userId = await getUserId()
+  if (!["pending", "taken", "missed"].includes(status)) throw new Error("Invalid status")
+  if (!/^\d{1,2}:\d{2}$/.test(time)) throw new Error("Invalid time")
+
+  const [med] = await db
+    .select({ id: medications.id, name: medications.name })
+    .from(medications)
+    .where(and(eq(medications.id, medicationId), eq(medications.userId, userId)))
+    .limit(1)
+  if (!med) throw new Error("Not found")
+
+  const scheduledFor = `${todayKey()} ${time}`
+  const match = and(
+    eq(medLogs.userId, userId),
+    eq(medLogs.medicationId, medicationId),
+    eq(medLogs.scheduledFor, scheduledFor),
+  )
+  const existing = await db.select().from(medLogs).where(match).limit(1)
+
+  if (status === "pending") {
+    if (existing.length > 0) await db.delete(medLogs).where(match)
+  } else if (existing.length > 0) {
+    await db.update(medLogs).set({ status }).where(eq(medLogs.id, existing[0].id))
+  } else {
+    await db.insert(medLogs).values({ userId, medicationId, scheduledFor, status })
+  }
+  if (status !== "pending" && existing[0]?.status !== status) notifyFamilyOfDose(userId, med.name, status)
   revalidatePath("/medications")
   revalidatePath("/home")
   return { ok: true }
@@ -65,10 +149,21 @@ export async function toggleDose(medicationId: number, time: string) {
     )
     .limit(1)
 
-  if (existing.length > 0) {
+  const becameTaken = existing.length === 0 || existing[0].status !== "taken"
+  if (existing.length > 0 && existing[0].status !== "taken") {
+    await db.update(medLogs).set({ status: "taken" }).where(eq(medLogs.id, existing[0].id))
+  } else if (existing.length > 0) {
     await db.delete(medLogs).where(eq(medLogs.id, existing[0].id))
   } else {
     await db.insert(medLogs).values({ userId, medicationId, scheduledFor, status: "taken" })
+  }
+  if (becameTaken) {
+    const [med] = await db
+      .select({ name: medications.name })
+      .from(medications)
+      .where(and(eq(medications.id, medicationId), eq(medications.userId, userId)))
+      .limit(1)
+    if (med) notifyFamilyOfDose(userId, med.name, "taken")
   }
   revalidatePath("/medications")
   revalidatePath("/home")
@@ -82,6 +177,7 @@ export type Dose = {
   note: string | null
   time: string
   taken: boolean
+  status: DoseStatus
 }
 
 /** Build today's dose list from the user's medications + today's logs. */
@@ -95,18 +191,24 @@ export async function getTodaySchedule(): Promise<Dose[]> {
     .from(medLogs)
     .where(and(eq(medLogs.userId, userId), gte(medLogs.scheduledFor, `${day} `)))
 
-  const takenSet = new Set(logs.filter((l) => l.scheduledFor.startsWith(day)).map((l) => `${l.medicationId}@${l.scheduledFor.split(" ")[1]}`))
+  const statusMap = new Map<string, DoseStatus>()
+  for (const l of logs) {
+    if (!l.scheduledFor.startsWith(day)) continue
+    statusMap.set(`${l.medicationId}@${l.scheduledFor.split(" ")[1]}`, l.status === "missed" ? "missed" : "taken")
+  }
 
   const doses: Dose[] = []
   for (const m of meds) {
     for (const time of parseTimes(m.times)) {
+      const status = statusMap.get(`${m.id}@${time}`) ?? "pending"
       doses.push({
         medicationId: m.id,
         name: m.name,
         dosage: m.dosage,
         note: m.notes,
         time,
-        taken: takenSet.has(`${m.id}@${time}`),
+        taken: status === "taken",
+        status,
       })
     }
   }
