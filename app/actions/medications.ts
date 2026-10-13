@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache"
 import { parseTimes, todayKey } from "@/lib/schedule"
 import { after } from "next/server"
 import { notifyFamily } from "@/lib/family-notify"
+import { queueUpcomingForUser } from "@/lib/notification-queue"
 
 function notifyFamilyOfDose(userId: string, medName: string, status: "taken" | "missed") {
   after(() =>
@@ -57,6 +58,7 @@ export async function addMedication(input: {
     times: input.times?.trim() || null,
     notes: input.notes?.trim() || null,
   })
+  after(() => queueUpcomingForUser(userId).catch((err) => console.error("[medications] Queue failed:", err)))
   revalidatePath("/medications")
   revalidatePath("/home")
   revalidatePath("/schedule")
@@ -88,6 +90,7 @@ export async function updateMedication(
       notes: input.notes?.trim().slice(0, 500) || null,
     })
     .where(and(eq(medications.id, id), eq(medications.userId, userId)))
+  after(() => queueUpcomingForUser(userId).catch((err) => console.error("[medications] Queue failed:", err)))
   revalidatePath("/medications")
   revalidatePath("/home")
   revalidatePath("/schedule")

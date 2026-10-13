@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, serial, integer } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, boolean, serial, integer, jsonb } from "drizzle-orm/pg-core"
 
 // --- Better Auth required tables -------------------------------------------
 // Column names are camelCase to match Better Auth's defaults. Do not rename.
@@ -187,6 +187,22 @@ export const notificationPrefs = pgTable("notification_prefs", {
 // One row per reminder already sent, so the scheduled check never sends twice.
 export const notificationLog = pgTable("notification_log", {
   key: text("key").primaryKey(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+})
+
+// Medication and appointment reminders waiting to be pushed at an exact time.
+// dedupeKey stops the daily cron and Home visits from queueing the same reminder twice.
+export const notificationQueue = pgTable("notification_queue", {
+  id: serial("id").primaryKey(),
+  userId: text("userId").notNull(),
+  type: text("type").notNull(), // medication | appointment
+  dedupeKey: text("dedupeKey").notNull().unique(),
+  scheduledAt: timestamp("scheduledAt").notNull(),
+  payload: jsonb("payload").notNull(),
+  sent: boolean("sent").notNull().default(false),
+  sentAt: timestamp("sentAt"),
+  outcome: text("outcome"), // push | email | none | skipped
+  runId: text("runId"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 })
 

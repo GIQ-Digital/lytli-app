@@ -10,7 +10,10 @@ export function NotificationContextSync() {
 
   useEffect(() => {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    syncNotificationContext({ language: lang, timeZone }).catch(() => {})
+    // The time zone is saved first so today's reminders are queued at the right local times.
+    syncNotificationContext({ language: lang, timeZone })
+      .then(() => fetch("/api/notifications/schedule-today", { method: "POST" }))
+      .catch(() => {})
   }, [lang])
 
   return null
