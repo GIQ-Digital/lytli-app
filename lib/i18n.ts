@@ -398,10 +398,13 @@ const dict = {
   schedule: { en: "Schedule", pt: "Agenda", es: "Agenda" },
   upcoming: { en: "Upcoming", pt: "Próximas", es: "Próximas" },
   reminderSet: {
-    en: "Reminder set",
-    pt: "Lembrete definido",
-    es: "Recordatorio activo",
+  en: "Reminder set",
+  pt: "Lembrete definido",
+  es: "Recordatorio activo",
   },
+  shareAppointment: { en: "Share", pt: "Compartilhar", es: "Compartir" },
+  openInMaps: { en: "Maps", pt: "Mapa", es: "Mapa" },
+  openInMapsLabel: { en: "Open address in Google Maps", pt: "Abrir endereço no Google Maps", es: "Abrir dirección en Google Maps" },
   addAppointment: {
     en: "+ Add appointment",
     pt: "+ Adicionar consulta",
@@ -548,7 +551,7 @@ const dict = {
   privacyBody: {
     en: "1. Data we collect\nAccount details, the name/age/relationship of the person you care for, medications and appointments you add, and wellness check-ins.\n\n2. How we use it\nTo provide reminders, organization, family sharing, and general wellness tips.\n\n3. Family sharing\nYou control what is shared with your Family Circle through sharing settings.\n\n4. AI sessions\nYour wellness sessions are stored to show your history. They are NOT used to train AI models.\n\n5. Security\nData is encrypted in transit and at rest.\n\n6. Your rights\nYou may access, correct, or delete your data at any time.\n\n7. Regional laws\nWe comply with LGPD (Brazil) and CCPA (California).\n\n8. Age requirement\nLytli is for adults 18 and older only.\n\n9. Contact\nEmail admin@giqdigital.com.",
     pt: "1. Dados que coletamos\nInformações da conta, nome/idade/relação da pessoa que você cuida, medicamentos e consultas que você adiciona e check-ins de bem-estar.\n\n2. Como usamos\nPara fornecer lembretes, organização, compartilhamento familiar e dicas gerais de bem-estar.\n\n3. Compartilhamento familiar\nVocê controla o que é compartilhado com seu Círculo Familiar nas configurações de compartilhamento.\n\n4. Sessões de IA\nSuas sessões de bem-estar são armazenadas para mostrar seu histórico. Elas NÃO são usadas para treinar modelos de IA.\n\n5. Segurança\nOs dados são criptografados em trânsito e em repouso.\n\n6. Seus direitos\nVocê pode acessar, corrigir ou excluir seus dados a qualquer momento.\n\n7. Leis regionais\nCumprimos a LGPD (Brasil) e a CCPA (Califórnia).\n\n8. Requisito de idade\nA Lytli é apenas para adultos com 18 anos ou mais.\n\n9. Contato\nEscreva para admin@giqdigital.com.",
-    es: "1. Datos que recopilamos\nDatos de la cuenta, nombre/edad/relación de la persona que cuidas, medicamentos y citas que agregas, y check-ins de bienestar.\n\n2. Cómo los usamos\nPara ofrecer recordatorios, organización, compartir con la familia y consejos generales de bienestar.\n\n3. Compartir con la familia\nTú controlas lo que se comparte con tu Círculo Familiar mediante la configuración de compartir.\n\n4. Sesiones de IA\nTus sesiones de bienestar se almacenan para mostrar tu historial. NO se usan para entrenar modelos de IA.\n\n5. Seguridad\nLos datos se cifran en tránsito y en reposo.\n\n6. Tus derechos\nPuedes acceder, corregir o eliminar tus datos en cualquier momento.\n\n7. Leyes regionales\nCumplimos con LGPD (Brasil) y CCPA (California).\n\n8. Requisito de edad\nLytli es solo para adultos de 18 años o más.\n\n9. Contacto\nEscribe a admin@giqdigital.com.",
+    es: "1. Datos que recopilamos\nDatos de la cuenta, nombre/edad/relación de la persona que cuidas, medicamentos y citas que agregas, y check-ins de bienestar.\n\n2. Cómo los usamos\nPara ofrecer recordatorios, organización, compartir con la familia y consejos generales de bienestar.\n\n3. Compartir con la familia\nTú controlas lo que se comparte con tu Círculo Familiar mediante la configuración de compartir.\n\n4. Sesiones de IA\nTus sesiones de bienestar se almacenan para mostrar tu historial. NO se usan para entrenar modelos de IA.\n\n5. Seguridad\nLos datos se cifran en tránsito y en reposo.\n\n6. Tus derechos\nPuedes acceder, corregir o eliminar tus datos en cualquier momento.\n\n7. Leyes regionales\nCumplimos con LGPD (Brasil) y CCPA (California).\n\n8. Requisito de edad\nLytli es solo para adultos de 18 a��os o más.\n\n9. Contacto\nEscribe a admin@giqdigital.com.",
   },
 
   // Legal — Disclaimer
