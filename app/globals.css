@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Lytli palette */
+  --color-body: var(--body);
+  --color-green-dark: var(--green-dark);
+  --color-green-darker: var(--green-darker);
+  --color-mint: var(--mint);
+  --color-mint-border: var(--mint-border);
+  --color-amber: var(--amber);
+  --color-amber-border: var(--amber-border);
+  --color-amber-text: var(--amber-text);
+  --color-amber-title: var(--amber-title);
+  --color-coral: var(--coral);
+  --color-emergency: var(--emergency);
+  --color-emergency-foreground: var(--emergency-foreground);
+  --color-disclaimer: var(--disclaimer);
+  --color-disclaimer-foreground: var(--disclaimer-foreground);
+  --color-pill-done: var(--pill-done);
+  --color-pill-done-foreground: var(--pill-done-foreground);
+  --color-pill-pending: var(--pill-pending);
+  --color-pill-pending-foreground: var(--pill-pending-foreground);
+  --color-pill-missed: var(--pill-missed);
+  --color-pill-missed-foreground: var(--pill-missed-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  color-scheme: light;
+  --radius: 0.875rem;
+
+  --background: #f0fbf6;
+  --foreground: #2c2c2a;
+  --card: #ffffff;
+  --card-foreground: #2c2c2a;
+  --popover: #ffffff;
+  --popover-foreground: #2c2c2a;
+  --primary: #2d9e6b;
+  --primary-foreground: #ffffff;
+  --secondary: #e8f7f0;
+  --secondary-foreground: #085041;
+  --muted: #f8f9fa;
+  --muted-foreground: #888888;
+  --accent: #e8f7f0;
+  --accent-foreground: #085041;
+  --destructive: #e24b4a;
+  --destructive-foreground: #ffffff;
+  --border: #b8e8d4;
+  --input: #b8e8d4;
+  --ring: #2d9e6b;
+
+  --body: #4a4a5a;
+  --green-dark: #0f6e56;
+  --green-darker: #085041;
+  --mint: #e8f7f0;
+  --mint-border: #9fe1cb;
+  --amber: #faeeda;
+  --amber-border: #fac775;
+  --amber-text: #633806;
+  --amber-title: #412402;
+  --coral: #f08060;
+  --emergency: #fcebeb;
+  --emergency-foreground: #791f1f;
+  --disclaimer: #f8f9fa;
+  --disclaimer-foreground: #888888;
+  --pill-done: #e1f5ee;
+  --pill-done-foreground: #085041;
+  --pill-pending: #faeeda;
+  --pill-pending-foreground: #633806;
+  --pill-missed: #fcebeb;
+  --pill-missed-foreground: #791f1f;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
