@@ -588,6 +588,9 @@ const dict = {
   medNotes: { en: "Notes", pt: "Observações", es: "Notas" },
   noMeds: { en: "No medications yet. Add the first one to start tracking doses.", pt: "Nenhum medicamento ainda. Adicione o primeiro para começar a acompanhar as doses.", es: "Aún no hay medicamentos. Agrega el primero para empezar a controlar las dosis." },
   deleteMedConfirm: { en: "Remove this medication?", pt: "Remover este medicamento?", es: "¿Quitar este medicamento?" },
+  edit: { en: "Edit", pt: "Editar", es: "Editar" },
+  editMedication: { en: "Edit medication", pt: "Editar medicamento", es: "Editar medicamento" },
+  doseStatusHint: { en: "Tap to change status", pt: "Toque para mudar o status", es: "Toca para cambiar el estado" },
 
   // Appointment form
   aptTitle: { en: "Title", pt: "Título", es: "Título" },
